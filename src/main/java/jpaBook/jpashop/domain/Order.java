@@ -2,6 +2,8 @@ package jpaBook.jpashop.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")  // DB 종류에 따라 Order라는 것이 예약어로 등록되어 있는 경우가 있어 오류가 날 수 있기 때문에 보통 ORDERS로 많이 쓴다.
@@ -12,8 +14,12 @@ public class Order {
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @Column(name = "MEMBER_ID")
-    private Long memberId;
+    @ManyToOne  // Order 입장에서 Member는 다대일 관계이므로
+    @JoinColumn(name = "MEMBER_ID")  // 조인을 걸 컬럼을 맵핑해주면 된다.
+    private Member member;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate;
 
@@ -28,12 +34,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public LocalDateTime getOrderDate() {
@@ -50,5 +56,10 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);  // 현재 나의 order 넣어서 양방향 관계가 걸리도록.
     }
 }

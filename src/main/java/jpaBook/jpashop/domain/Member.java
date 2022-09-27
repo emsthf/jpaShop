@@ -1,9 +1,8 @@
 package jpaBook.jpashop.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
@@ -16,6 +15,9 @@ public class Member {
     private String city;
     private String street;
     private String zipcode;
+
+    @OneToMany(mappedBy = "member")  // 연관관계의 주인이 되는 필드 값(Order의 member)
+    private List<Order> orders = new ArrayList<>();  // JPA 관례 상 배열 초기화. 그래야 데이터 없이 넣어서 NullPointerException 방지 가능
 
     public Long getId() {
         return id;
