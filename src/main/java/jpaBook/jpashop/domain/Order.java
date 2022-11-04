@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "ORDERS")  // DB 종류에 따라 Order라는 것이 예약어로 등록되어 있는 경우가 있어 오류가 날 수 있기 때문에 보통 ORDERS로 많이 쓴다.
 public class Order extends BaseEntity {
@@ -14,15 +17,15 @@ public class Order extends BaseEntity {
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @ManyToOne  // Order 입장에서 Member는 다대일 관계이므로
+    @ManyToOne(fetch = LAZY)  // Order 입장에서 Member는 다대일 관계이므로
     @JoinColumn(name = "MEMBER_ID")  // 조인을 걸 컬럼을 맵핑해주면 된다.
     private Member member;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate;
